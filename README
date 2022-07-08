@@ -1,0 +1,17 @@
+Spread Sheet
+============
+Making a Spread Sheet with Golang to learn it, and take some ideas to my next project (A new programming language and its compiler), every operation
+will be documented here, and having fun :D.
+
+[===== TABLE =====]
+The table is a file which saves something like:
+    16  | "some text" | 4.3 | True
+    -16 | "text some" | 3.4 | False
+The serparator is '|' character, it means that in that table there are only two row and 4 columns for row.
+
+[===== TYPES =====]
+At this moment there are only four types:
+    ~ Integer.
+    ~ Float.
+    ~ Boolean.
+    ~ String.
