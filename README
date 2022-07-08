@@ -15,3 +15,8 @@ At this moment there are only four types:
     ~ Float.
     ~ Boolean.
     ~ String.
+
+[==== COPY ====]
+To copy or get the content of another cell gotta writte {XY} where:
+    ~ X: Column [A-Z]
+    ~ Y: Row [0-499]

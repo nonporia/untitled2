@@ -1,6 +1,7 @@
 package main
+
 import (
-    "regexp"
+	"regexp"
 )
 
 /**
@@ -8,4 +9,5 @@ import (
  * **/
 var rgx_isnumber,  _ = regexp.Compile("^(-|)(\\d+|\\d+.\\d+)$")
 var rgx_isstring,  _ = regexp.Compile("^\".*\"$")
-var rgx_isboolean, _ = regexp.Compile("^(true|false)$")
+var rgx_isboolean, _ = regexp.Compile("^(TRUE|FALSE)$")
+var rgx_iscopyop,  _ = regexp.Compile("^{[A-Z][0-4](|[0-9])(|[0-9])}$");

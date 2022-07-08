@@ -11,6 +11,11 @@ const (
     LIT_NUMBER
     LIT_FSTRING
     LIT_BOOLEAN
+    LIT_UNKNOWN
+
+    OP_COPY
+
+    ERROR
 )
 
 type CELL struct {
@@ -77,8 +82,14 @@ func prs_setcell (cont string, row, col int) {
     }
     if rgx_isboolean.MatchString(cell.content) {
         cell.ctype = LIT_BOOLEAN
+        goto SET_CELL
+    }
+    if rgx_iscopyop.MatchString(cell.content) {
+        cell.ctype = OP_COPY
+        goto SET_CELL
     }
 
+    cell.ctype = LIT_UNKNOWN
     SET_CELL:
     Table[row][col] = cell
 }
@@ -109,9 +120,17 @@ func Prs_setcolumns (content string, row_idx int) {
 }
 
 func Prs_printable () {
+    var cuCell *CELL
     for row := 0; row < row_max; row ++ {
         for col := 0; col < col_max; col ++ {
-            prs_print(Table[row][col].content)
+            cuCell = &Table[row][col]
+
+            if cuCell.ctype == OP_COPY {
+                Op_copy(cuCell)
+                NL_lastvisited = nil
+            }
+
+            prs_print(cuCell.content)
         }
         fmt.Println()
     }
