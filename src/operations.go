@@ -2,6 +2,7 @@ package main
 import (
     _ "fmt"
     "strconv"
+    "strings"
 )
 
 /**
@@ -19,6 +20,16 @@ func op_getcoords_cell_byref (ref string) (int, int) {
      var col int = int(ref[1]) - 65
      row, _ := strconv.Atoi( ref[2:len(ref) - 1] )
      return row, col
+}
+
+func op_setths_cell (n_type CELL_TYPE, n_content string, thsCell *CELL) {
+    /**
+     * 'thsCell' will be as an auxiliar to get another cell value while
+     * another operation is working, for example in the fstrings this function
+     * will be called to get the value of some pointed cell.
+     * **/
+     thsCell.ctype = n_type
+     thsCell.content = n_content
 }
 
 func Op_copy (thsCell *CELL) {
@@ -45,7 +56,26 @@ func Op_copy (thsCell *CELL) {
         NL_lastvisited = thsCell
         Op_copy(cpyCell)
     }
+    if cpyCell.ctype == LIT_STRING {
+        Op_fstring(cpyCell)
+    }
 
     thsCell.content = cpyCell.content
     thsCell.ctype = cpyCell.ctype
+}
+
+func Op_fstring (thsCell *CELL) {
+    var words []string = strings.Split(thsCell.content, " ")
+    var newstr string
+
+    for w := 0; w < len(words); w++ {
+        if rgx_iscopyop.MatchString(words[w]) {
+            op_setths_cell(OP_COPY, words[w], thsCell)
+            Op_copy(thsCell)
+            words[w] = thsCell.content
+        }
+        newstr += words[w] + " "
+    }
+    thsCell.content = newstr
+    thsCell.ctype = LIT_STRING
 }

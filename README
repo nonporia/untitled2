@@ -20,3 +20,10 @@ At this moment there are only four types:
 To copy or get the content of another cell gotta writte {XY} where:
     ~ X: Column [A-Z]
     ~ Y: Row [0-499]
+
+[==== FSTR ====]
+Formated strings are able to copy the value of another cell and added to the current string.
+    ~ Table:
+    "Hola" | 'Hi in spanish is {A0}'
+    ~ Output:
+    "Hola" | 'Hi in spanish is Hola'

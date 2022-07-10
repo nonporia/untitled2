@@ -88,6 +88,11 @@ func prs_setcell (cont string, row, col int) {
         cell.ctype = OP_COPY
         goto SET_CELL
     }
+    if rgx_isfstring.MatchString(cell.content) {
+        cell.ctype = LIT_FSTRING
+        cell.content = cell.content[1:len(cell.content) - 1]
+        goto SET_CELL
+    }
 
     cell.ctype = LIT_UNKNOWN
     SET_CELL:
@@ -128,6 +133,9 @@ func Prs_printable () {
             if cuCell.ctype == OP_COPY {
                 Op_copy(cuCell)
                 NL_lastvisited = nil
+            }
+            if cuCell.ctype == LIT_FSTRING {
+                Op_fstring(cuCell)
             }
 
             prs_print(cuCell.content)
