@@ -1,6 +1,10 @@
+/**
+ * Spread Sheet.
+ * nonporia, Jul 8.
+ * **/
 package main
 import (
-    _ "fmt"
+    "fmt"
     "strconv"
     "strings"
 )
@@ -59,6 +63,9 @@ func Op_copy (thsCell *CELL) {
     if cpyCell.ctype == LIT_STRING {
         Op_fstring(cpyCell)
     }
+    if cpyCell.ctype == OP_ARITH {
+        Op_arith(cpyCell)
+    }
 
     thsCell.content = cpyCell.content
     thsCell.ctype = cpyCell.ctype
@@ -74,8 +81,92 @@ func Op_fstring (thsCell *CELL) {
             Op_copy(thsCell)
             words[w] = thsCell.content
         }
+        if rgx_isarith.MatchString(words[w]) {
+            op_setths_cell(OP_ARITH, words[w], thsCell)
+            Op_arith(thsCell)
+            words[w] = thsCell.content
+        }
+
         newstr += words[w] + " "
     }
     thsCell.content = newstr
     thsCell.ctype = LIT_STRING
+}
+
+func Op_arith (thsCell *CELL) {
+    var wholeOp []string = strings.Split(thsCell.content[1:], ";")
+    wholeOp[len(wholeOp) - 1] = "END." /** To mark the end of the operation. **/
+
+    var cu_opr, nxt_opr string
+    var cu_val, _ float64
+
+    for idx := 1; idx < len(wholeOp); idx += 2 {
+        if (idx + 1) >= len(wholeOp) || wholeOp[idx] == "END." {
+            break
+        } else {
+            /**
+             * idx variable is always pointing to one operator, so:
+             *     [NUMBER OPERATOR NUMBER OPERATOR NUMBER END]
+             *               |                |
+             *              idx            idx + 2
+             * **/
+            cu_opr = wholeOp[idx]
+            nxt_opr = wholeOp[idx + 2]
+
+            if arith_isoperator(cu_opr) == 0 || arith_isoperator(nxt_opr) == 0 {
+                thsCell.content = "OPERA"
+                thsCell.ctype = ERROR
+                return
+            }
+        }
+
+        /**
+         * Getting the first number of the whole operation.
+         * Setting the first value of the whole operation.
+         * **/
+        if idx == 1 {
+            fvalue := arith_getnumber(thsCell, wholeOp[0])
+            if thsCell.ctype == ERROR { return }
+            cu_val = fvalue
+        }
+        /**
+         * The next number of the operation is always at the rigth of current
+         * operator.
+         * **/
+        thsnum := arith_getnumber(thsCell, wholeOp[idx + 1])
+        if thsCell.ctype == ERROR { return }
+
+        if cu_opr == "+" || cu_opr == "-" {
+            var thenum float64 = thsnum
+            /**
+             * Respect to precedence.
+             * if the next operations is not an addition and neither is a
+             * substraction gotta make the next operation first.
+             * **/
+            if nxt_opr != "+" && nxt_opr != "-" && nxt_opr != "END." {
+                if (idx + 3) >= len(wholeOp) {
+                    thsCell.content = "INAOP"
+                    thsCell.ctype = ERROR
+                    return
+                }
+                thsnum = arith_getnumber(thsCell, wholeOp[idx + 3])
+                if thsCell.ctype == ERROR { return }
+
+                if nxt_opr == "*" { thenum *= thsnum } else { thenum /= thsnum; }
+                idx += 2
+            }
+            /**
+             * Sets the value of the next operation to the current
+             * operation, and if there was not just make the current
+             * operation.
+             * **/
+            if cu_opr == "+" { cu_val += thenum } else { cu_val -= thenum }
+        } else {
+            if cu_opr == "*" { cu_val *= thsnum } else { cu_val /= thsnum }
+        }
+    }
+
+    thsCell.content = fmt.Sprintf("%.2f", cu_val)
+    thsCell.asnum = cu_val
+    thsCell.ctype = LIT_NUMBER
 }

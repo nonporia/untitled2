@@ -1,13 +1,18 @@
 Spread Sheet
 ============
-Making a Spread Sheet with Golang to learn it, and take some ideas to my next project (A new programming language and its compiler), every operation
-will be documented here, and having fun :D.
+Making a Spread Sheet with Golang to learn it, and take some ideas to my next project (A new programming language and its compiler).
 
 [===== TABLE =====]
 The table is a file which saves something like:
     16  | "some text" | 4.3 | True
     -16 | "text some" | 3.4 | False
 The serparator is '|' character, it means that in that table there are only two row and 4 columns for row.
+
+[==== ERRORS ====]
+    ~ LOOP!: There was a loop in the copy operation.
+    ~ OPERA: Wrong operator in arithmetic formula.
+    ~ REFER: Wrong referece given as argument.
+    ~ INAOP: Incomplete arithmetic operation.
 
 [===== TYPES =====]
 At this moment there are only four types:
@@ -23,7 +28,20 @@ To copy or get the content of another cell gotta writte {XY} where:
 
 [==== FSTR ====]
 Formated strings are able to copy the value of another cell and added to the current string.
-    ~ Table:
+    ~ Input Table:
     "Hola" | 'Hi in spanish is {A0}'
-    ~ Output:
+    ~ Output Table:
     "Hola" | 'Hi in spanish is Hola'
+
+[==== ARITHMETIC ====]
+To make arithmetic operations (addition, substraction, multiplication and division) gotta write a formula between "[" and "]" characters.
+Every element in the formula must be separated by one ";" character, just to make it easier.
+    ~ Input Table:
+    [4; *; 2;]
+    [{A0}; +; 3; *; 4;]
+    ~ Output Table:
+    8
+    20
+
+[==== Quick TODO ====]
+    ~ DIV_0 error!

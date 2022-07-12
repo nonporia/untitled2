@@ -1,3 +1,7 @@
+/**
+ * Spread Sheet.
+ * nonporia, Jul 7.
+ * **/
 package main
 import (
 	"bufio"

@@ -1,3 +1,7 @@
+/**
+ * Spread Sheet.
+ * nonporia, Jul 7.
+ * **/
 package main
 import (
 	"fmt"
@@ -14,6 +18,7 @@ const (
     LIT_UNKNOWN
 
     OP_COPY
+    OP_ARITH
 
     ERROR
 )
@@ -93,6 +98,10 @@ func prs_setcell (cont string, row, col int) {
         cell.content = cell.content[1:len(cell.content) - 1]
         goto SET_CELL
     }
+    if rgx_isarith.MatchString(cell.content) {
+        cell.ctype = OP_ARITH
+        goto SET_CELL
+    }
 
     cell.ctype = LIT_UNKNOWN
     SET_CELL:
@@ -100,7 +109,7 @@ func prs_setcell (cont string, row, col int) {
 }
 
 func prs_print (content string) {
-    fmt.Printf("%s ", content)
+    fmt.Printf("%s", content)
     for spc := 0; spc < (dig_max - len(content)); spc++ {
         fmt.Printf(" ")
     }
@@ -136,6 +145,9 @@ func Prs_printable () {
             }
             if cuCell.ctype == LIT_FSTRING {
                 Op_fstring(cuCell)
+            }
+            if cuCell.ctype == OP_ARITH {
+                Op_arith(cuCell)
             }
 
             prs_print(cuCell.content)
