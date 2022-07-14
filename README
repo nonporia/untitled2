@@ -13,6 +13,7 @@ The serparator is '|' character, it means that in that table there are only two 
     ~ OPERA: Wrong operator in arithmetic formula.
     ~ REFER: Wrong referece given as argument.
     ~ INAOP: Incomplete arithmetic operation.
+    ~ DIV_0: Division by zero.
 
 [===== TYPES =====]
 At this moment there are only four types:
@@ -40,8 +41,5 @@ Every element in the formula must be separated by one ";" character, just to mak
     [4; *; 2;]
     [{A0}; +; 3; *; 4;]
     ~ Output Table:
-    8
-    20
-
-[==== Quick TODO ====]
-    ~ DIV_0 error!
+    8.0
+    20.0

@@ -7,6 +7,7 @@ import (
     "fmt"
     "strconv"
     "strings"
+    "math"
 )
 
 /**
@@ -67,6 +68,10 @@ func Op_copy (thsCell *CELL) {
         Op_arith(cpyCell)
     }
 
+
+    if cpyCell.ctype == LIT_NUMBER {
+        thsCell.asnum = cpyCell.asnum
+    }
     thsCell.content = cpyCell.content
     thsCell.ctype = cpyCell.ctype
 }
@@ -163,6 +168,12 @@ func Op_arith (thsCell *CELL) {
             if cu_opr == "+" { cu_val += thenum } else { cu_val -= thenum }
         } else {
             if cu_opr == "*" { cu_val *= thsnum } else { cu_val /= thsnum }
+        }
+
+        if cu_val == math.Inf(1) || cu_val == math.Inf(-1) {
+            thsCell.content = "DIV_0"
+            thsCell.ctype = ERROR
+            return
         }
     }
 
