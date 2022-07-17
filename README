@@ -18,8 +18,7 @@ The serparator is '|' character, it means that in that table there are only two 
 
 [===== TYPES =====]
 At this moment there are only four types:
-    ~ Integer.
-    ~ Float.
+    ~ Number (Could be integer or float, the program will interpret it as float64).
     ~ Boolean.
     ~ String.
 
@@ -49,4 +48,4 @@ Every element in the formula must be separated by one ";" character, just to mak
 Given a range searches for the minium or maxium value in the range, can be:
     ~ MAX/MIN( {XY} {XZ} ) -> Searches in the column from Y to Z.
     ~ MAX/MIN( {XA} {ZA} ) -> Searches in the row from X to Z.
-    ~ MAX/MIN( {XA} {YB} ) -> Searches in a square from (XA) to (YB).
+    ~ MAX/MIN( {XA} {YB} ) -> Searches in a square from (X, A) to (Y, B).
