@@ -66,12 +66,13 @@ func Op_copy (thsCell *CELL) {
     }
     if cpyCell.ctype == OP_ARITH {
         Op_arith(cpyCell)
-    }
-
-
-    if cpyCell.ctype == LIT_NUMBER {
         thsCell.asnum = cpyCell.asnum
     }
+    if cpyCell.ctype == OP_MAXMIN {
+        Op_maxmin(cpyCell)
+        thsCell.asnum = cpyCell.asnum
+    }
+
     thsCell.content = cpyCell.content
     thsCell.ctype = cpyCell.ctype
 }
@@ -91,6 +92,11 @@ func Op_fstring (thsCell *CELL) {
             Op_arith(thsCell)
             words[w] = thsCell.content
         }
+        if rgx_ismaxminop.MatchString(words[w]) {
+            op_setths_cell(OP_MAXMIN, words[w], thsCell)
+            Op_maxmin(thsCell)
+            words[w] = thsCell.content
+        }
 
         newstr += words[w] + " "
     }
@@ -101,9 +107,7 @@ func Op_fstring (thsCell *CELL) {
 func Op_arith (thsCell *CELL) {
     var wholeOp []string = strings.Split(thsCell.content[1:], ";")
     wholeOp[len(wholeOp) - 1] = "END." /** To mark the end of the operation. **/
-
     var cu_opr, nxt_opr string
-    var cu_val, _ float64
 
     for idx := 1; idx < len(wholeOp); idx += 2 {
         if (idx + 1) >= len(wholeOp) || wholeOp[idx] == "END." {
@@ -132,7 +136,7 @@ func Op_arith (thsCell *CELL) {
         if idx == 1 {
             fvalue := arith_getnumber(thsCell, wholeOp[0])
             if thsCell.ctype == ERROR { return }
-            cu_val = fvalue
+            thsCell.asnum = fvalue
         }
         /**
          * The next number of the operation is always at the rigth of current
@@ -165,19 +169,66 @@ func Op_arith (thsCell *CELL) {
              * operation, and if there was not just make the current
              * operation.
              * **/
-            if cu_opr == "+" { cu_val += thenum } else { cu_val -= thenum }
+            if cu_opr == "+" { thsCell.asnum += thenum } else { thsCell.asnum -= thenum }
         } else {
-            if cu_opr == "*" { cu_val *= thsnum } else { cu_val /= thsnum }
+            if cu_opr == "*" { thsCell.asnum *= thsnum } else { thsCell.asnum /= thsnum }
         }
 
-        if cu_val == math.Inf(1) || cu_val == math.Inf(-1) {
+        if thsCell.asnum == math.Inf(1) || thsCell.asnum == math.Inf(-1) {
             thsCell.content = "DIV_0"
             thsCell.ctype = ERROR
             return
         }
     }
 
-    thsCell.content = fmt.Sprintf("%.2f", cu_val)
-    thsCell.asnum = cu_val
+    thsCell.content = fmt.Sprintf("%.2f", thsCell.asnum)
     thsCell.ctype = LIT_NUMBER
 }
+
+func Op_maxmin (thsCell *CELL) {
+    var ismin bool = false
+    if thsCell.content[:3] == "MIN" {
+        ismin = true
+    }
+
+    var points []string = strings.Split(thsCell.content[4:], ":")
+    var auxRow int = 0
+    var fCell bool = true
+    var cuCell CELL
+
+    p1R, p1C := op_getcoords_cell_byref(points[0])
+    p2R, p2C := op_getcoords_cell_byref(points[1])
+
+    if (p1C > p2C) || (p1R > p2R) {
+        thsCell.content = "RANGE"
+        thsCell.ctype = ERROR
+        return
+    }
+
+    for p1C <= p2C {
+        auxRow = p1R
+        for auxRow <= p2R {
+            cuCell = Table[auxRow][p1C]
+            if cuCell.ctype != LIT_NUMBER {
+                thsCell.content = "REFER"
+                thsCell.ctype = ERROR
+                return
+            }
+
+            if fCell {
+                thsCell.asnum = cuCell.asnum
+                fCell = false
+            }
+
+            if !ismin && cuCell.asnum > thsCell.asnum { thsCell.asnum = cuCell.asnum  }
+            if ismin && cuCell.asnum < thsCell.asnum { thsCell.asnum = cuCell.asnum  }
+            auxRow++
+        }
+        p1C++
+        auxRow = 0
+    }
+
+    thsCell.content = fmt.Sprintf("%.2f", thsCell.asnum)
+    thsCell.ctype = LIT_NUMBER
+}
+

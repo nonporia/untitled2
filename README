@@ -14,6 +14,7 @@ The serparator is '|' character, it means that in that table there are only two 
     ~ REFER: Wrong referece given as argument.
     ~ INAOP: Incomplete arithmetic operation.
     ~ DIV_0: Division by zero.
+    ~ RANGE: Wrong range.
 
 [===== TYPES =====]
 At this moment there are only four types:
@@ -43,3 +44,9 @@ Every element in the formula must be separated by one ";" character, just to mak
     ~ Output Table:
     8.0
     20.0
+
+[==== MAX and MIN ====]
+Given a range searches for the minium or maxium value in the range, can be:
+    ~ MAX/MIN( {XY} {XZ} ) -> Searches in the column from Y to Z.
+    ~ MAX/MIN( {XA} {ZA} ) -> Searches in the row from X to Z.
+    ~ MAX/MIN( {XA} {YB} ) -> Searches in a square from (XA) to (YB).

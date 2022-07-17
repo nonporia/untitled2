@@ -19,6 +19,7 @@ const (
 
     OP_COPY
     OP_ARITH
+    OP_MAXMIN
 
     ERROR
 )
@@ -102,6 +103,10 @@ func prs_setcell (cont string, row, col int) {
         cell.ctype = OP_ARITH
         goto SET_CELL
     }
+    if rgx_ismaxminop.MatchString(cell.content) {
+        cell.ctype = OP_MAXMIN
+        goto SET_CELL
+    }
 
     cell.ctype = LIT_UNKNOWN
     SET_CELL:
@@ -143,12 +148,9 @@ func Prs_printable () {
                 Op_copy(cuCell)
                 NL_lastvisited = nil
             }
-            if cuCell.ctype == LIT_FSTRING {
-                Op_fstring(cuCell)
-            }
-            if cuCell.ctype == OP_ARITH {
-                Op_arith(cuCell)
-            }
+            if cuCell.ctype == LIT_FSTRING { Op_fstring(cuCell) }
+            if cuCell.ctype == OP_ARITH { Op_arith(cuCell) }
+            if cuCell.ctype == OP_MAXMIN { Op_maxmin(cuCell) }
 
             prs_print(cuCell.content)
         }

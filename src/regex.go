@@ -23,4 +23,5 @@ var rgx_iscopyop,  _ = regexp.Compile("^{[A-Z][0-9](|[0-9])(|[0-9])}$")
  * As you can see every element in the element is separated by one comma, that is just to
  * interpret it easier.
  **/
-var rgx_isarith, _ = regexp.Compile("^\\[(.*;){3,}\\]$")
+var rgx_isarith,    _ = regexp.Compile("^\\[(.*;){3,}\\]$")
+var rgx_ismaxminop, _ = regexp.Compile("^(MAX|MIN)\\(({[A-Z][0-9](|[0-9])(|[0-9])}:){2}\\)$");
