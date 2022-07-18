@@ -8,6 +8,7 @@ import (
     "strconv"
     "strings"
     "math"
+    "os"
 )
 
 /**
@@ -24,6 +25,11 @@ func op_getcoords_cell_byref (ref string) (int, int) {
      * **/
      var col int = int(ref[1]) - 65
      row, _ := strconv.Atoi( ref[2:len(ref) - 1] )
+
+     if row >= 500 {
+         fmt.Printf("%s: Row value out of range.\n", ref)
+         os.Exit(1)
+     }
      return row, col
 }
 
