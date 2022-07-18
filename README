@@ -1,6 +1,6 @@
 Spread Sheet
 ============
-Making a Spread Sheet with Golang to learn it, and take some ideas to my next project (A new programming language and its compiler).
+Making a Spread Sheet with Golang to learn it, and taking some ideas from Golang to one of next projects (A programming language and its compiler).
 
 [===== TABLE =====]
 The table is a file which saves something like:

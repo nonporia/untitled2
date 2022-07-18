@@ -24,4 +24,4 @@ var rgx_iscopyop,  _ = regexp.Compile("^{[A-Z][0-9](|[0-9])(|[0-9])}$")
  * interpret it easier.
  **/
 var rgx_isarith,    _ = regexp.Compile("^\\[(.*;){3,}\\]$")
-var rgx_ismaxminop, _ = regexp.Compile("^(MAX|MIN)\\(({[A-Z][0-9](|[0-9])(|[0-9])}:){2}\\)$");
+var rgx_ismaxminop, _ = regexp.Compile("^(MAX|MIN)\\(({[A-Z][0-9](|[0-9])(|[0-9])}:){2}\\)$")

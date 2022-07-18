@@ -231,4 +231,3 @@ func Op_maxmin (thsCell *CELL) {
     thsCell.content = fmt.Sprintf("%.2f", thsCell.asnum)
     thsCell.ctype = LIT_NUMBER
 }
-
